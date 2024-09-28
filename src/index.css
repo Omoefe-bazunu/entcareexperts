@@ -1,0 +1,326 @@
+/* Ubuntu font */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+/* src/styles/tailwind.css */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+:root {
+  font-family: "Ubuntu", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* ANIMATIONS */
+
+/* .ServiceBox .anim {
+  animation: rotate 8s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */
+
+.button {
+  transition: transform 0.8s ease-in-out;
+}
+
+.button:hover {
+  transform: scale(0.85);
+}
+
+/* MENUBAR */
+.scale-up-tr {
+	-webkit-animation: scale-up-tr 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	        animation: scale-up-tr 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+.menu-link li:hover {
+  transition: color 1s;
+  color: rgb(238, 255, 15);
+}
+
+ @-webkit-keyframes scale-up-tr {
+  0% {
+    -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+}
+@keyframes scale-up-tr {
+  0% {
+    -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+}
+
+/* RESPONSIVENESS */
+
+@media only screen and (max-width: 930px) {
+
+  .NavLinks {
+    display: none;
+  }
+
+  .MenuIcon {
+    display: flex;
+    margin-left: 100px;
+    margin-top: 10px;
+  }
+
+  .LocationsInner div p {
+    width: 25%;
+  }
+  
+}
+
+@media only screen and (max-width: 830px) {
+
+  .AboutWrap .aboutImg {
+    width: 230px;
+  }
+
+  .WorkingHrsWrap .timing p {
+    width: 40%;
+  }
+
+  .bannerWrap div .mainText {
+    font-size: 1.500rem /* 30px */;
+    line-height: 2.00rem /* 36px */;
+  }
+
+  .bannerWrap div .subText {
+    font-size: 1.00rem /* 20px */;
+    line-height: 1.35rem /* 28px */;
+  }
+
+  .bannerWrap .texts {
+    flex-grow: 1;
+  }
+
+}
+
+@media only screen and (max-width: 550px) {
+
+  .aboutInner {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 60px
+  } 
+
+  .FeaturesWrap {
+    position:absolute;
+    bottom: -40px;
+    right: 70px
+
+  }
+
+  .LocationsInner div p {
+    width: 35%;
+    font-size: 0.875rem /* 14px */;
+    line-height: 1.25rem /* 20px */;
+  }
+
+  .LocationsInner div {
+    gap: 30px
+  }
+
+  .ServiceBox .anim {
+    width: 80px;
+    height: 80px;
+    top: -40px
+  }
+
+  .ServiceBox {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .ServiceBox p {
+    margin-top: 25px;
+  }
+
+  .bannerWrap {
+    gap:12px
+  }
+  
+  .bannerWrap div .mainText {
+    font-size: 1.500rem /* 30px */;
+    line-height: 1.60rem /* 36px */;
+  }
+
+  .bannerWrap div .subText {
+    font-size: 1.00rem /* 20px */;
+    line-height: 1.35rem /* 28px */;
+    width: 240px;
+  }
+
+  .call p {
+    font-size: 8px;
+  }
+
+}
+
+@media only screen and (max-width: 430px) {
+
+  .Banner {
+    height: fit-content;
+  }
+
+  .bannerWrap {
+    flex-direction:column-reverse;
+    gap: 50px
+  }
+
+  .bannerWrap {
+    margin-bottom: 60px;
+  }
+
+  .FeaturesWrap {
+    left: 45px;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 80%
+  }
+
+  .serviceInner div {
+    flex-direction: column;
+    gap: 0px
+  }
+
+  .serviceInner .divider {
+    margin: none;
+    margin-top: 12px;
+  }
+
+  .serviceInner div hr {
+   height: 2px;
+   width: 100%;
+  }
+
+  .serviceInner div .btm {
+    top: 190px;
+   }
+
+   .bannerWrap .texts {
+    align-items: center;
+   }
+
+   .bannerWrap .texts p{
+    text-align: center;
+   }
+
+   .bannerWrap .texts .mainText {
+    width: 60%;
+    line-height: 1.70rem /* 36px */;
+   }
+
+   .ServiceBox p {
+    font-size: 0.9rem /* 12px */;
+    line-height: 1rem /* 16px */;
+   }
+
+   .serviceInner .s2,  .serviceInner .s4 {
+    margin-top: 70px;
+   }
+
+   .PaymentWrap p {
+    width: 75%;
+  }
+
+  
+}
+
+@media only screen and (max-width: 390px) {
+  .FeaturesWrap {
+    left: 40px;
+  }
+
+  .FeaturesWrap div p {
+    font-size: 0.75rem /* 12px */;
+    line-height: 0.8rem /* 16px */
+  }
+
+  .WorkingHrsWrap .timing p {
+    width: 60%;
+  }
+
+  .LocationsInner div p {
+    width: 45%;
+  }
+
+  .LocationsInner div {
+    gap: 18px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .Footer .FooterWrap .FooterLinks {
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .Footer .FooterWrap .admin {
+    margin-top: 12px;
+  }
+  .Footer .FooterWrap .FooterLinks a {
+    text-align: center;
+  }
+
+  .PaymentWrap button {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .PaymentWrap p {
+    width: 90%;
+  }
+
+  .AppointmentWrap div {
+    flex-direction: column;
+  }
+
+  .ContactWrap input,  .ContactWrap textarea, .AppointmentWrap input, .AppointmentWrap textarea {
+    width: 80%;
+  }
+  
+}
