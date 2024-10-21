@@ -4,8 +4,8 @@ import NavBar from "./NavBar";
 
 const NavLayout = () => {
   return (
-    <div>
-      <div className="NavBar w-full">
+    <div className="">
+      <div className="NavBar w-full h-fit">
         <Navheader />
         <NavBar />
       </div>

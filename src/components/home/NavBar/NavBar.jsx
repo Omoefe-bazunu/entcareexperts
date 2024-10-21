@@ -1,4 +1,3 @@
-import React from "react";
 import { TfiList } from "react-icons/tfi";
 import { TfiClose } from "react-icons/tfi";
 import { useState } from "react";
@@ -7,8 +6,8 @@ const NavBar = () => {
   const [toggle, setToggle] = useState(true);
 
   return (
-    <div className=" w-full h-16 relative">
-      <div className="h-full w-5/6 mx-auto flex flex-row">
+    <div className=" w-full h-16 relative bg-white">
+      <div className="h-full w-5/6 mx-auto flex flex-row ">
         <div className=" w-fit h-full flex flex-row justify-start items-center">
           <a href="/">
             <p className=" text-md font-semibold text-tet text-nowrap cursor-pointer">

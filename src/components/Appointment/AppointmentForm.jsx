@@ -34,7 +34,7 @@ const AppointmentForm = () => {
         </div>
         <input
           type="text"
-          placeholder="Address"
+          placeholder="Email address"
           name="address"
           className=" w-[60%] border-b-2 border-zinc-200 pb-2 bg-secondary2 text-center outline-none"
         />
