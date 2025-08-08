@@ -15,7 +15,7 @@ const Features = () => {
 
   return (
     <div className="absolute -bottom-10 transform -translate-x-1/2 z-20 heartbeat">
-      <div className="flex gap-4 px-8 py-5 bg-secondary2 rounded-xl border-b-4 border-primary shadow-lg animate-fadeIn">
+      <div className="flex gap-4 px-8 py-5 bg-secondary2 rounded-xl border-b-4 border-sky-700 shadow-lg animate-fadeIn">
         {features.map((feature, idx) => (
           <div
             key={idx}

@@ -41,8 +41,7 @@ const Locations = () => {
       <div
         className="absolute inset-0 bg-cover bg-center opacity-10"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1569336415962-a510987eda20?auto=format&fit=crop&w=2000&q=80')",
+          backgroundImage: "url('/images/locations/map.jpg')",
         }}
       />
       <div className="w-11/12 max-w-7xl mx-auto flex flex-col items-center gap-12 relative z-10">
@@ -50,7 +49,7 @@ const Locations = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl font-bold text-gray-800 tracking-tight"
+          className="text-4xl font-bold text-sky-500 tracking-tight"
         >
           Our Locations
         </motion.h2>

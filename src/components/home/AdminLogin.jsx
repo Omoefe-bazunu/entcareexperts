@@ -11,7 +11,7 @@ export const AdminLogin = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       LogIn.reset();
-      window.location.href = "/Messages";
+      window.location.href = "/admin";
     } catch (error) {
       console.log(error.message);
     }

@@ -5,17 +5,61 @@ import {
   orderBy,
   doc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, dbase } from "../Firebase";
 import { Link } from "react-router-dom";
 import { signOut } from "firebase/auth";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FaTrash,
+  FaEdit,
+  FaChevronDown,
+  FaChevronUp,
+  FaSave,
+} from "react-icons/fa";
 
-export const Appointments = () => {
-  const [appointment, setAppointment] = useState(null);
-  const [User, setUser] = useState("");
+export const DashboardData = () => {
+  const [appointments, setAppointments] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [User, setUser] = useState(null);
+  const [expandedId, setExpandedId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState({});
 
-  //   const User = auth.currentUser;
+  const [appointmentsExpanded, setAppointmentsExpanded] = useState(true);
+  const [messagesExpanded, setMessagesExpanded] = useState(true);
+
+  const toggleExpand = (id) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
+
+  const toggleEdit = (item) => {
+    setEditingId(item.id);
+    setEditForm(item);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditForm({});
+  };
+
+  const handleEditChange = (field, value) => {
+    setEditForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const saveEdit = async () => {
+    if (!editingId) return;
+    try {
+      const docRef = doc(dbase, "appointments", editingId);
+      await updateDoc(docRef, editForm);
+      setEditingId(null);
+      setEditForm({});
+    } catch (error) {
+      alert("Failed to save changes: " + error.message);
+    }
+  };
 
   const signout = () => {
     signOut(auth);
@@ -23,119 +67,223 @@ export const Appointments = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribeAuth = auth.onAuthStateChanged((user) => {
       setUser(user);
     });
-
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribeAuth();
   }, []);
 
   useEffect(() => {
-    if (User) {
-      const fetchAppointments = async () => {
-        const q = query(
-          collection(dbase, "appointments"),
-          orderBy("createdAt", "desc")
-        );
-        onSnapshot(q, async (snapshot) => {
-          const appointment = [];
-          for (const doc of snapshot.docs) {
-            const appItem = { ...doc.data(), id: doc.id };
-            appItem.formattedDate = formatDate(appItem.createdAt.toDate());
-            appointment.push(appItem);
-          }
-          setAppointment(appointment);
-        });
-      };
+    if (!User) return;
 
-      fetchAppointments();
-    }
+    const appQ = query(
+      collection(dbase, "appointments"),
+      orderBy("createdAt", "desc")
+    );
+    const unsubscribeApps = onSnapshot(appQ, (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        formattedDate: formatDate(doc.data().createdAt?.toDate()),
+      }));
+      setAppointments(data);
+    });
+
+    const msgQ = query(
+      collection(dbase, "messages"),
+      orderBy("createdAt", "desc")
+    );
+    const unsubscribeMsgs = onSnapshot(msgQ, (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        formattedDate: formatDate(doc.data().createdAt?.toDate()),
+      }));
+      setMessages(data);
+    });
+
+    return () => {
+      unsubscribeApps();
+      unsubscribeMsgs();
+    };
   }, [User]);
 
-  // Helper function to format date
   const formatDate = (date) => {
-    const day = date.getDate();
-    const month = date.getMonth();
-    const monthName = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ][month];
-    const year = date.getFullYear();
-    return `${day} ${monthName}, ${year}`;
+    if (!date) return "N/A";
+    return date.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
   };
 
-  const handleDeletePost = async (msgId) => {
-    const docRef = doc(dbase, "appointments", msgId);
-    deleteDoc(docRef)
-      .then(() => {
-        alert("Document deleted successfully!");
-      })
-      .catch((error) => {
-        alert("Error deleting document: ", error);
-      });
+  const handleDelete = async (collectionName, id) => {
+    if (!window.confirm("Are you sure you want to delete this item?")) return;
+    try {
+      await deleteDoc(doc(dbase, collectionName, id));
+    } catch (error) {
+      alert("Delete failed: " + error.message);
+    }
   };
+
+  const renderList = (items, collectionName) =>
+    items.map((item) => {
+      const isExpanded = expandedId === item.id;
+      const isEditing = editingId === item.id;
+
+      return (
+        <motion.div
+          key={item.id}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="bg-white shadow rounded-lg p-4 mb-4 border"
+        >
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm text-gray-500">{item.formattedDate}</p>
+              <p className="font-semibold">{item.name || "No Name"}</p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => toggleExpand(item.id)}
+                className="text-gray-500 hover:text-blue-500"
+                aria-label={isExpanded ? "Collapse details" : "Expand details"}
+              >
+                {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+              </button>
+              <button
+                onClick={() => toggleEdit(item)}
+                className="text-gray-500 hover:text-green-500"
+                aria-label="Edit item"
+              >
+                <FaEdit />
+              </button>
+              <button
+                onClick={() => handleDelete(collectionName, item.id)}
+                className="text-gray-500 hover:text-red-500"
+                aria-label="Delete item"
+              >
+                <FaTrash />
+              </button>
+            </div>
+          </div>
+
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="mt-3 text-sm text-gray-700 space-y-2"
+              >
+                {isEditing ? (
+                  <div className="space-y-2">
+                    {Object.keys(item).map((field) => {
+                      if (["id", "formattedDate", "createdAt"].includes(field))
+                        return null;
+                      return (
+                        <input
+                          key={field}
+                          className="w-full border p-2 rounded"
+                          value={editForm[field] ?? ""}
+                          onChange={(e) =>
+                            handleEditChange(field, e.target.value)
+                          }
+                        />
+                      );
+                    })}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={saveEdit}
+                        className="flex items-center gap-1 bg-green-500 text-white px-3 py-1 rounded"
+                      >
+                        <FaSave /> Save
+                      </button>
+                      <button
+                        onClick={cancelEdit}
+                        className="bg-gray-300 px-3 py-1 rounded"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  Object.keys(item).map((field) => {
+                    if (["id", "formattedDate", "createdAt"].includes(field))
+                      return null;
+                    return (
+                      <p key={field}>
+                        <span className="font-semibold capitalize">
+                          {field}:
+                        </span>{" "}
+                        {item[field]}
+                      </p>
+                    );
+                  })
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      );
+    });
 
   return (
-    <div className="w-full h-fit border-t-2 border-zinc-200 pt-12">
-      <div className="MessagesWrapper w-5/6 mx-auto h-fit gap-4">
-        <div className="message-inner w-full h-fit rounded-md flex gap-3 flex-col">
-          <div className="header W-full h-fit rounded-md flex flex-col justify-center items-center gap py-4 px-5 text-white font-bold text-2xl">
-            <Link to="/">
-              <p className=" text-tet underline text-center text-sm">
-                Return to the Home Page
-              </p>
-            </Link>
-            <p className="text-primary text-center mt-8">Appointments</p>
-          </div>
-          {appointment &&
-            appointment.map((appointment) => (
-              <div
-                key={appointment.id}
-                className="messages w-full h-fit px-5 mb-5 py-4 bg-tet rounded-md text-white"
-              >
-                <div className="sender text-xs">
-                  {appointment.formattedDate}{" "}
-                </div>
-                <p className="  text-sm">{appointment.name}</p>
-                <p className="  text-sm">{appointment.age}</p>
-                <p className="  text-sm">{appointment.sex}</p>
-                <p className="  text-sm">{appointment.address}</p>
-                <p className="  text-sm">{appointment.location}</p>
-                <p className="postBody  whitespace-pre-wrap">
-                  {appointment.complaint}
-                </p>
-                <button
-                  className="w-fit px-8 py-1 mt-4 rounded bg-red-400"
-                  onClick={() => handleDeletePost(appointment.id)}
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-          {User ? (
-            <button
-              onClick={signout}
-              id="SignBtn"
-              className="Signout-Btn button bg-primary rounded py-4 px-12 mb-24 cursor-pointer self-center text-white w-fit text-nowrap mt-5"
-            >
-              SIGN OUT
-            </button>
-          ) : (
-            <div></div>
-          )}
+    <div className="w-full bg-gray-100 py-20">
+      <div className="max-w-4xl mx-auto px-4">
+        <Link to="/" className="text-blue-600 underline text-sm">
+          Return to the Home Page
+        </Link>
+
+        {/* Appointments Section */}
+        <div
+          className="flex justify-between items-center mt-6 mb-4 cursor-pointer"
+          onClick={() => setAppointmentsExpanded(!appointmentsExpanded)}
+        >
+          <h1 className="text-2xl font-bold text-gray-800">Appointments</h1>
+          {appointmentsExpanded ? <FaChevronUp /> : <FaChevronDown />}
         </div>
+        <AnimatePresence>
+          {appointmentsExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+            >
+              {renderList(appointments, "appointments")}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Messages Section */}
+        <div
+          className="flex justify-between items-center mt-10 mb-4 cursor-pointer"
+          onClick={() => setMessagesExpanded(!messagesExpanded)}
+        >
+          <h1 className="text-2xl font-bold text-gray-800">Messages</h1>
+          {messagesExpanded ? <FaChevronUp /> : <FaChevronDown />}
+        </div>
+        <AnimatePresence>
+          {messagesExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+            >
+              {renderList(messages, "messages")}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {User && (
+          <button
+            onClick={signout}
+            className="mt-10 bg-red-500 text-white px-6 py-2 rounded shadow hover:bg-red-600"
+          >
+            SIGN OUT
+          </button>
+        )}
       </div>
     </div>
   );

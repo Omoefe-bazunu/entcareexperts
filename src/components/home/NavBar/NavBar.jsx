@@ -1,8 +1,10 @@
 import { TfiList, TfiClose } from "react-icons/tfi";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const NavBar = () => {
   const [toggle, setToggle] = useState(true);
+  const location = useLocation();
 
   const links = [
     { label: "Home", href: "/" },
@@ -12,13 +14,36 @@ const NavBar = () => {
     { label: "Contact Us", href: "#contact" },
   ];
 
+  const handleScroll = (e, href) => {
+    e.preventDefault();
+
+    if (href.startsWith("#")) {
+      if (location.pathname !== "/") {
+        // Redirect to home with hash
+        window.location.href = `/${href}`;
+      } else {
+        // Already on home page, smooth scroll
+        const sectionId = href.substring(1);
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    } else {
+      // Normal page navigation
+      window.location.href = href;
+    }
+    setToggle(true);
+  };
+
   return (
     <nav className="w-full h-16 bg-white shadow-lg fixed top-0 left-0 z-50">
       <div className="h-full w-5/6 max-w-6xl mx-auto flex items-center justify-between">
         {/* Logo / Brand */}
         <a
           href="/"
-          className="text-xl font-extrabold text-gray-800 tracking-tight hover:text-primary transition-colors duration-300"
+          className="text-xl font-extrabold text-sky-500 tracking-tight hover:text-sky-700 transition-colors duration-300"
+          onClick={(e) => handleScroll(e, "/")}
         >
           ENT Care Experts
         </a>
@@ -29,7 +54,8 @@ const NavBar = () => {
             <a
               key={idx}
               href={link.href}
-              className="relative px-4 py-2 rounded-lg text-sm uppercase tracking-wide  transition-all duration-300 group"
+              className="relative px-4 py-2 rounded-lg text-sm uppercase tracking-wide transition-all duration-300 group"
+              onClick={(e) => handleScroll(e, link.href)}
             >
               {link.label}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-500 transition-all duration-300 group-hover:w-full"></span>
@@ -37,7 +63,8 @@ const NavBar = () => {
           ))}
           <a
             href="/AppointmentForm"
-            className="px-8 py-3 bg-sky-500 hover:bg-sky-700 text-white transition-all duration-300 rounded-full shadow-lg font-semibold uppercase tracking-wide text-sm"
+            className="px-8 py-3 bg-sky-500 hover:bg-sky-700 text-white transition-all duration-300 rounded-full font-semibold uppercase tracking-wide text-sm"
+            onClick={(e) => handleScroll(e, "/AppointmentForm")}
           >
             Make Appointment
           </a>
@@ -65,14 +92,17 @@ const NavBar = () => {
               key={idx}
               href={link.href}
               className="relative text-lg font-medium border-b border-gray-600 pb-3 hover:pl-3 transition-all duration-300"
-              onClick={() => setToggle(true)}
+              onClick={(e) => handleScroll(e, link.href)}
             >
               {link.label}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-500 transition-all duration-300 hover:w-full"></span>
             </a>
           ))}
           <a href="/AppointmentForm">
-            <button className="w-full mt-6 py-3 bg-sky-500 text-white font-semibold uppercase rounded-lg shadow-md hover:bg-sky-700 hover:shadow-lg transition-all duration-300">
+            <button
+              className="w-full mt-6 py-3 bg-sky-500 text-white font-semibold uppercase rounded-lg shadow-md hover:bg-sky-700 hover:shadow-lg transition-all duration-300"
+              onClick={(e) => handleScroll(e, "/AppointmentForm")}
+            >
               Make Appointment
             </button>
           </a>
