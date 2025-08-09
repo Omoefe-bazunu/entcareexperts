@@ -51,12 +51,24 @@ const Services = () => {
                 <motion.div
                   className="absolute inset-0 bg-cover bg-center"
                   style={{ backgroundImage: `url(${service.bgImage})` }}
-                  initial={{ scale: 1 }}
-                  animate={{ scale: 1 }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.4 }}
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                <motion.div
+                  className="absolute top-4 left-4"
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                >
+                  <div className="w-4 h-4 bg-sky-500 rounded-full" />
+                </motion.div>
+                <motion.div
+                  className="absolute top-4 right-4"
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5, delay: 0.3 }}
+                >
+                  <div className="w-4 h-4 bg-sky-500 rounded-full" />
+                </motion.div>
                 <motion.div
                   className="absolute bottom-0 p-6 w-full"
                   initial={{ y: 20, opacity: 0 }}
@@ -68,7 +80,7 @@ const Services = () => {
                   </h3>
                   <motion.a
                     href={`#${service.uniqueClass}`}
-                    className=" hidden px-4 py-2 text-sm font-medium text-primary bg-white rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                    className="hidden px-4 py-2 text-sm font-medium text-primary bg-white rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >

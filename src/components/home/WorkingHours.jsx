@@ -93,7 +93,7 @@ const WorkingHours = () => {
               whileTap={{ scale: 0.95 }}
               className="px-8 py-3 bg-sky-500 hover:bg-sky-700 text-white transition-all duration-300 rounded-full font-semibold uppercase tracking-wide text-sm"
             >
-              Book Appointment
+              Make Appointment
             </motion.button>
           </a>
         </motion.div>

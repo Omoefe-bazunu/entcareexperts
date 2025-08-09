@@ -42,14 +42,14 @@ const NavBar = () => {
         {/* Logo / Brand */}
         <a
           href="/"
-          className="text-xl font-extrabold text-sky-500 tracking-tight hover:text-sky-700 transition-colors duration-300"
+          className="text-xl font-bold text-sky-500 tracking-tight hover:text-sky-700 transition-colors duration-300"
           onClick={(e) => handleScroll(e, "/")}
         >
           ENT Care Experts
         </a>
 
         {/* Desktop Menu */}
-        <ul className="hidden md:flex items-center gap-4 font-medium text-gray-700">
+        <ul className="hidden md:flex items-center font-medium text-gray-700">
           {links.map((link, idx) => (
             <a
               key={idx}
