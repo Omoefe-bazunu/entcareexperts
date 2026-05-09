@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Features from "./features";
+import Features from "./Features";
 
 const Banner = () => {
   const backgrounds = [
